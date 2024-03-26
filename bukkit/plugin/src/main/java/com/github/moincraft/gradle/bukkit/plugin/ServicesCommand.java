@@ -5,10 +5,13 @@ import dev.derklaro.aerogel.Singleton;
 import eu.cloudnetservice.driver.provider.CloudServiceProvider;
 import eu.cloudnetservice.driver.provider.ServiceTaskProvider;
 import eu.cloudnetservice.driver.registry.ServiceRegistry;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import eu.cloudnetservice.driver.service.ServiceTask;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
@@ -16,16 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class QuickJoinCommand implements TabExecutor {
+public class ServicesCommand implements CommandExecutor {
 
-  private final ServiceRegistry serviceRegistry;
-  private final ServiceTaskProvider serviceTaskProvider;
+  private final CloudServiceProvider cloudServiceProvider;
 
   @Inject
-  public QuickJoinCommand(
-      ServiceRegistry serviceRegistry, ServiceTaskProvider serviceTaskProvider) {
-    this.serviceRegistry = serviceRegistry;
-    this.serviceTaskProvider = serviceTaskProvider;
+  public ServicesCommand(CloudServiceProvider cloudServiceProvider) {
+    this.cloudServiceProvider = cloudServiceProvider;
   }
 
   @Override
@@ -34,28 +34,15 @@ public class QuickJoinCommand implements TabExecutor {
       @NotNull Command command,
       @NotNull String label,
       @NotNull String[] args) {
-    if (args.length != 1) {
+    if (args.length != 0) {
       sender.sendMessage("Wrong arguments.");
       return false;
     }
-    String task = args[0];
-    if (sender instanceof Player player) {
-      var playerManager = serviceRegistry.firstProvider(PlayerManager.class);
-      playerManager.playerExecutor(player.getUniqueId()).connect(task);
-    }
+    String services =
+        this.cloudServiceProvider.services().stream()
+            .map(serviceInfoSnapshot -> serviceInfoSnapshot.serviceId().name())
+            .collect(Collectors.joining(","));
+    sender.sendMessage(services);
     return true;
-  }
-
-  @Nullable
-  @Override
-  public List<String> onTabComplete(
-      @NotNull CommandSender sender,
-      @NotNull Command command,
-      @NotNull String label,
-      @NotNull String[] args) {
-    if (args.length != 1) {
-      return null;
-    }
-    return serviceTaskProvider.serviceTasks().stream().map(ServiceTask::name).toList();
   }
 }

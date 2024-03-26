@@ -6,6 +6,7 @@ import eu.cloudnetservice.ext.platforminject.api.stereotype.Dependency;
 import eu.cloudnetservice.ext.platforminject.api.stereotype.PlatformPlugin;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Singleton
@@ -21,17 +22,24 @@ import org.bukkit.plugin.java.JavaPlugin;
       @Command(
           name = "quickjoin",
           description = "A sample command for quickjoin",
-          usage = "/quickjoin [task]")
+          usage = "/quickjoin [task]"),
+      @Command(
+          name = "services",
+          description = "A sample command to list all services",
+          usage = "/services")
     })
 public class SamplePlugin implements PlatformEntrypoint {
 
   private final JavaPlugin plugin;
   private final QuickJoinCommand quickJoinCommand;
+  private final ServicesCommand servicesCommand;
 
   @Inject
-  public SamplePlugin(JavaPlugin plugin, QuickJoinCommand quickJoinCommand) {
+  public SamplePlugin(
+      JavaPlugin plugin, QuickJoinCommand quickJoinCommand, ServicesCommand servicesCommand) {
     this.plugin = plugin;
     this.quickJoinCommand = quickJoinCommand;
+    this.servicesCommand = servicesCommand;
   }
 
   @Override
@@ -41,10 +49,14 @@ public class SamplePlugin implements PlatformEntrypoint {
   }
 
   private void registerCommands() {
-    final var quickJoinPluginCommand = this.plugin.getCommand("quickjoin");
+    var quickJoinPluginCommand = this.plugin.getCommand("quickjoin");
     if (quickJoinPluginCommand != null) {
       quickJoinPluginCommand.setExecutor(this.quickJoinCommand);
       quickJoinPluginCommand.setTabCompleter(this.quickJoinCommand);
+    }
+    var servicesPluginCommand = this.plugin.getCommand("services");
+    if (servicesPluginCommand != null) {
+      servicesPluginCommand.setExecutor(this.servicesCommand);
     }
   }
 
