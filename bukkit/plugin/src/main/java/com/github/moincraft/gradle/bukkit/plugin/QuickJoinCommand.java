@@ -56,6 +56,7 @@ public class QuickJoinCommand implements TabExecutor {
     if (args.length != 1) {
       return null;
     }
+    // it is time to crash cloudnet :D
     return serviceTaskProvider.serviceTasks().stream().map(ServiceTask::name).toList();
   }
 }

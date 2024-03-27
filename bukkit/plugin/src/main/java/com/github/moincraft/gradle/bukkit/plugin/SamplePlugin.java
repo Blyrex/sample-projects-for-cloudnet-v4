@@ -1,5 +1,6 @@
 package com.github.moincraft.gradle.bukkit.plugin;
 
+import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.ext.platforminject.api.PlatformEntrypoint;
 import eu.cloudnetservice.ext.platforminject.api.stereotype.Command;
 import eu.cloudnetservice.ext.platforminject.api.stereotype.Dependency;

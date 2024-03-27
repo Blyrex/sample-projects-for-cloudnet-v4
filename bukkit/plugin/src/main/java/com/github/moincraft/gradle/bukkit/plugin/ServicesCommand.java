@@ -2,6 +2,7 @@ package com.github.moincraft.gradle.bukkit.plugin;
 
 import dev.derklaro.aerogel.Inject;
 import dev.derklaro.aerogel.Singleton;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceProvider;
 import eu.cloudnetservice.driver.provider.ServiceTaskProvider;
 import eu.cloudnetservice.driver.registry.ServiceRegistry;
@@ -38,6 +39,7 @@ public class ServicesCommand implements CommandExecutor {
       sender.sendMessage("Wrong arguments.");
       return false;
     }
+    // Alternatively, utilize `InjectionLayer.ext().instance(CloudServiceProvider.class)` to retrieve the CloudServiceProvider.
     String services =
         this.cloudServiceProvider.services().stream()
             .map(serviceInfoSnapshot -> serviceInfoSnapshot.serviceId().name())
