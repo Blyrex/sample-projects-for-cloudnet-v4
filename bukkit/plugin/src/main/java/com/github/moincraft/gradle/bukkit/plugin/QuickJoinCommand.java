@@ -7,6 +7,7 @@ import eu.cloudnetservice.driver.provider.ServiceTaskProvider;
 import eu.cloudnetservice.driver.registry.ServiceRegistry;
 import eu.cloudnetservice.driver.service.ServiceTask;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
+import eu.cloudnetservice.modules.bridge.player.executor.ServerSelectorType;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,7 +42,7 @@ public class QuickJoinCommand implements TabExecutor {
     String task = args[0];
     if (sender instanceof Player player) {
       var playerManager = serviceRegistry.firstProvider(PlayerManager.class);
-      playerManager.playerExecutor(player.getUniqueId()).connect(task);
+      playerManager.playerExecutor(player.getUniqueId()).connectToTask(task, ServerSelectorType.RANDOM);
     }
     return true;
   }
